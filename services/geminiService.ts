@@ -1,8 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Category } from '../types';
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 interface ScannedReceiptData {
   amountTHB: number;
@@ -11,11 +10,6 @@ interface ScannedReceiptData {
 }
 
 export const scanReceipt = async (base64Image: string): Promise<ScannedReceiptData | null> => {
-  if (!apiKey) {
-    console.warn("No API Key provided");
-    return null;
-  }
-
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',

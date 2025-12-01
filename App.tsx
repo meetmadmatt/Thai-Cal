@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Plus, List, PieChart, Camera, Loader2, Minus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, List, PieChart, Minus } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_ICONS, DEFAULT_EXCHANGE_RATE } from './constants';
 import { Expense, Category, PaymentMethod, ViewState } from './types';
 import NumberPad from './components/NumberPad';
 import Summary from './components/Summary';
 import History from './components/History';
-import { scanReceipt } from './services/geminiService';
 
 const LOCAL_STORAGE_KEY = 'high_thai_expenses_v1';
 
@@ -23,7 +22,6 @@ const App: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.Cash);
   const [isSplit, setIsSplit] = useState<boolean>(false);
   const [splitCount, setSplitCount] = useState<number>(2);
-  const [isScanning, setIsScanning] = useState<boolean>(false);
 
   // Load data
   useEffect(() => {
@@ -90,30 +88,6 @@ const App: React.FC = () => {
     setExpenses(prev => prev.filter(e => e.id !== id));
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsScanning(true);
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = (reader.result as string).split(',')[1];
-      const result = await scanReceipt(base64);
-      
-      if (result) {
-        setAmount(result.amountTHB.toString());
-        setCategory(result.category);
-        setDescription(result.description);
-      } else {
-        alert("Couldn't read the receipt clearly. Try manual entry.");
-      }
-      setIsScanning(false);
-    };
-    reader.readAsDataURL(file);
-  };
-
   // Render Log View
   const renderLogView = () => (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-24 font-mono">
@@ -122,23 +96,6 @@ const App: React.FC = () => {
         <div className="flex justify-between items-start mb-2">
             <div className="text-matrix-neon/80 text-xs font-bold tracking-widest uppercase animate-pulse">
                 &gt; AMOUNT_THB
-            </div>
-            <div className="flex gap-2">
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="p-2 border border-matrix-neon/40 rounded text-matrix-neon hover:bg-matrix-neon/10 active:bg-matrix-neon/20 transition-all"
-                  disabled={isScanning}
-                >
-                    {isScanning ? <Loader2 className="animate-spin" size={18} /> : <Camera size={18} />}
-                </button>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  capture="environment" 
-                  ref={fileInputRef} 
-                  className="hidden" 
-                  onChange={handleImageUpload}
-                />
             </div>
         </div>
         
@@ -267,7 +224,7 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow relative overflow-hidden bg-matrix-black bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-dim/20 to-transparent">
         {view === 'log' && renderLogView()}
-        {view === 'history' && <History expenses={expenses} onDelete={deleteExpense} />}
+        {view === 'history' && <History expenses={expenses} onDelete={deleteExpense} exchangeRate={exchangeRate} />}
         {view === 'stats' && <Summary expenses={expenses} exchangeRate={exchangeRate} />}
       </main>
 

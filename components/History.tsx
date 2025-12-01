@@ -7,9 +7,10 @@ import { Trash2 } from 'lucide-react';
 interface HistoryProps {
   expenses: Expense[];
   onDelete: (id: string) => void;
+  exchangeRate: number;
 }
 
-const History: React.FC<HistoryProps> = ({ expenses, onDelete }) => {
+const History: React.FC<HistoryProps> = ({ expenses, onDelete, exchangeRate }) => {
   if (expenses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-matrix-neon/30 font-mono">
@@ -60,7 +61,9 @@ const History: React.FC<HistoryProps> = ({ expenses, onDelete }) => {
                   <span className="text-lg font-bold text-matrix-neon tracking-tighter">
                     ฿ {exp.splitAmountTHB.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-matrix-neon/50">THB</span>
+                  <span className="text-[10px] text-matrix-neon/60">
+                    ≈ $ {(exp.splitAmountTHB * exchangeRate).toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                  </span>
                 </div>
 
                 <button 
