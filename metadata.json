@@ -1,0 +1,7 @@
+{
+  "name": "High Thai - Travel Tracker",
+  "description": "A weed-themed spending tracker for your trip to Thailand. Track expenses in THB, convert to HKD, and split bills easily.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
