@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import type { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import type { Expense, Category } from '../types';
-import type { CATEGORY_COLORS } from '../constants';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { Expense, Category } from '../types';
+import { CATEGORY_COLORS } from '../constants';
 
 interface SummaryProps {
   expenses: Expense[];
