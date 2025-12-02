@@ -8,12 +8,13 @@ import Summary from './components/Summary';
 import History from './components/History';
 
 const LOCAL_STORAGE_KEY = 'high_thai_expenses_v1';
+const RATE_STORAGE_KEY = 'high_thai_exchange_rate_v1';
 
 const App: React.FC = () => {
   // State
   const [view, setView] = useState<ViewState>('log');
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [exchangeRate] = useState<number>(DEFAULT_EXCHANGE_RATE);
+  const [exchangeRate, setExchangeRate] = useState<number>(DEFAULT_EXCHANGE_RATE);
   
   // Form State
   const [amount, setAmount] = useState<string>('');
@@ -23,8 +24,9 @@ const App: React.FC = () => {
   const [isSplit, setIsSplit] = useState<boolean>(false);
   const [splitCount, setSplitCount] = useState<number>(2);
 
-  // Load data
+  // Load data & Rate
   useEffect(() => {
+    // Load Expenses
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
       try {
@@ -33,12 +35,48 @@ const App: React.FC = () => {
         console.error("Failed to parse expenses", e);
       }
     }
+
+    // Load Rate
+    const savedRate = localStorage.getItem(RATE_STORAGE_KEY);
+    if (savedRate) {
+        try {
+            const parsedRate = parseFloat(savedRate);
+            if (!isNaN(parsedRate)) {
+                setExchangeRate(parsedRate);
+            }
+        } catch (e) {
+            console.error("Failed to parse saved rate", e);
+        }
+    } else {
+        // If no saved rate, try to fetch live once on first load
+        fetchLiveRate();
+    }
   }, []);
 
-  // Save data
+  // Save expenses
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(expenses));
   }, [expenses]);
+
+  // Save Rate
+  useEffect(() => {
+    localStorage.setItem(RATE_STORAGE_KEY, exchangeRate.toString());
+  }, [exchangeRate]);
+
+  const fetchLiveRate = async () => {
+      try {
+          const res = await fetch('https://api.exchangerate-api.com/v4/latest/THB');
+          const data = await res.json();
+          if (data && data.rates && data.rates.HKD) {
+              setExchangeRate(data.rates.HKD);
+              return true;
+          }
+      } catch (error) {
+          console.error("Failed to fetch live rate", error);
+          return false;
+      }
+      return false;
+  };
 
   // Form Handlers
   const handleNumberInput = (val: string) => {
@@ -225,7 +263,12 @@ const App: React.FC = () => {
       <main className="flex-grow relative overflow-hidden bg-matrix-black bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-dim/20 to-transparent">
         {view === 'log' && renderLogView()}
         {view === 'history' && <History expenses={expenses} onDelete={deleteExpense} exchangeRate={exchangeRate} />}
-        {view === 'stats' && <Summary expenses={expenses} exchangeRate={exchangeRate} />}
+        {view === 'stats' && <Summary 
+                                expenses={expenses} 
+                                exchangeRate={exchangeRate} 
+                                setExchangeRate={setExchangeRate}
+                                onFetchRate={fetchLiveRate}
+                            />}
       </main>
 
       {/* Bottom Nav */}

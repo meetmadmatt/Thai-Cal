@@ -1,14 +1,19 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Expense, Category } from '../types';
 import { CATEGORY_COLORS } from '../constants';
+import { RefreshCw } from 'lucide-react';
 
 interface SummaryProps {
   expenses: Expense[];
   exchangeRate: number;
+  setExchangeRate: (rate: number) => void;
+  onFetchRate: () => Promise<boolean>;
 }
 
-const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate }) => {
+const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate, setExchangeRate, onFetchRate }) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
   const totalTHB = useMemo(() => expenses.reduce((sum, e) => sum + e.splitAmountTHB, 0), [expenses]);
   const totalHKD = totalTHB * exchangeRate;
 
@@ -23,6 +28,12 @@ const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate }) => {
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
   }, [expenses]);
+
+  const handleRefresh = async () => {
+      setIsRefreshing(true);
+      await onFetchRate();
+      setTimeout(() => setIsRefreshing(false), 500);
+  };
 
   return (
     <div className="flex flex-col h-full space-y-4 p-6 pb-24 overflow-y-auto no-scrollbar font-mono">
@@ -79,6 +90,30 @@ const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate }) => {
         )}
       </div>
       
+      {/* Exchange Rate Config */}
+      <div className="bg-matrix-black border border-matrix-neon/10 p-4 rounded">
+        <h3 className="text-matrix-neon/60 text-xs font-bold uppercase tracking-widest mb-3">EXCHANGE_RATE_PROTOCOL</h3>
+        <div className="flex items-center space-x-3">
+             <div className="flex-grow">
+                 <label className="text-[10px] text-matrix-neon/50 block mb-1">1 THB = ? HKD</label>
+                 <input 
+                    type="number" 
+                    step="0.001"
+                    value={exchangeRate}
+                    onChange={(e) => setExchangeRate(parseFloat(e.target.value))}
+                    className="w-full bg-matrix-dim border border-matrix-neon/30 text-matrix-neon font-bold p-2 text-sm focus:border-matrix-neon outline-none"
+                 />
+             </div>
+             <button 
+                onClick={handleRefresh}
+                className="mt-4 p-2 bg-matrix-dim border border-matrix-neon/30 text-matrix-neon hover:bg-matrix-neon/10 active:bg-matrix-neon/20 transition-all rounded"
+                title="Sync Live Rate"
+             >
+                 <RefreshCw size={20} className={isRefreshing ? 'animate-spin' : ''}/>
+             </button>
+        </div>
+      </div>
+
       <div className="space-y-2">
         {data.map((item) => (
             <div key={item.name} className="flex justify-between items-center bg-matrix-black border border-matrix-neon/10 p-3 rounded">

@@ -20,7 +20,7 @@ export const CATEGORY_ICONS: Record<Category, React.ReactNode> = {
   [Category.Other]: <MoreHorizontal size={20} />,
 };
 
-export const DEFAULT_EXCHANGE_RATE = 0.225; // 1 THB = ~0.225 HKD (approx 1 HKD = 4.44 THB)
+export const DEFAULT_EXCHANGE_RATE = 0.24; // Updated to approx current rate
 
 // Matrix/Cyber Palette
 export const CATEGORY_COLORS: Record<Category, string> = {
