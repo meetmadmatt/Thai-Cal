@@ -146,8 +146,8 @@ const App: React.FC = () => {
         <div className="flex items-baseline justify-between mt-2">
             <div className="flex items-baseline overflow-hidden">
                 <span className="text-2xl text-matrix-neon mr-2">฿</span>
-                {/* Enlarged Amount Font */}
-                <span className="text-6xl font-bold text-matrix-neon tracking-tight drop-shadow-[0_0_5px_rgba(0,255,65,0.7)] truncate">
+                {/* Enlarged Amount Font - Reduced by 25% (text-6xl to text-[45px]) */}
+                <span className="text-[45px] font-bold text-matrix-neon tracking-tight drop-shadow-[0_0_5px_rgba(0,255,65,0.7)] truncate">
                     {amount || '0'}
                     <span className="text-2xl ml-2 animate-pulse">_</span>
                 </span>
@@ -172,7 +172,7 @@ const App: React.FC = () => {
       {/* Inputs Area */}
       <div className="flex-none p-4 space-y-4">
         
-        {/* Category Grid - Reduced Height */}
+        {/* Category Grid */}
         <div className="grid grid-cols-4 gap-[11px]">
           {Object.values(Category).map((cat) => (
             <button
@@ -190,8 +190,8 @@ const App: React.FC = () => {
           ))}
         </div>
 
-        {/* Controls Row: Payment & Split - Matched Height (h-12) */}
-        <div className="grid grid-cols-2 gap-3 h-12">
+        {/* Controls Row: Payment & Split - Reduced Height by 20% (h-12 -> h-[38px]) */}
+        <div className="grid grid-cols-2 gap-3 h-[38px]">
              {/* Payment Method Switch */}
             <div className="flex bg-matrix-dim border border-matrix-neon/30 rounded p-1 w-full h-full">
                 <button
