@@ -39,12 +39,12 @@ const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate, setExchangeRa
   return (
     <div className="flex flex-col h-full space-y-4 p-4 pb-24 overflow-y-auto no-scrollbar font-mono">
       
-      {/* Total Output & Exchange Rate Merged Card */}
+      {/* Total Expenses & Exchange Rate Merged Card */}
       <div className="bg-matrix-dim border border-matrix-neon/30 p-5 rounded shadow-neon-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-2 text-matrix-neon/30 text-[10px]">SYSTEM_STATUS: SPENDING</div>
         
         {/* Total Amounts */}
-        <h3 className="text-matrix-neon/60 text-xs font-bold uppercase tracking-widest mb-2">Total Output</h3>
+        <h3 className="text-matrix-neon/60 text-xs font-bold uppercase tracking-widest mb-2">Total Expenses</h3>
         <div className="flex flex-col">
           <div className="flex items-baseline space-x-2 flex-wrap">
              <span className="text-4xl font-bold text-matrix-neon drop-shadow-[0_0_5px_rgba(0,255,65,0.8)] break-all leading-none">
@@ -99,8 +99,10 @@ const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate, setExchangeRa
         </div>
       </div>
 
-      {/* Chart Section - No Wrapper, Larger */}
-      <div className="flex-none min-h-[280px] -my-2">
+      {/* Chart Section */}
+      <div className="flex-none -my-2 flex flex-col items-center">
+        <h3 className="text-matrix-neon/60 text-xs font-bold uppercase tracking-widest mt-4 mb-2 w-full text-left">Expense Allocation</h3>
+        <div className="w-full h-[280px]">
         {data.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -137,6 +139,7 @@ const Summary: React.FC<SummaryProps> = ({ expenses, exchangeRate, setExchangeRa
             NO_DATA_AVAILABLE
           </div>
         )}
+        </div>
       </div>
 
       {/* List Section */}

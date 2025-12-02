@@ -42,13 +42,27 @@ const History: React.FC<HistoryProps> = ({ expenses, onDelete, exchangeRate }) =
           </div>
           <div className="space-y-3">
             {grouped[date].sort((a, b) => b.timestamp - a.timestamp).map((exp) => (
-              <div key={exp.id} className="bg-matrix-dim border border-matrix-neon/20 rounded p-3 flex items-center justify-between relative group overflow-hidden transition-all hover:border-matrix-neon/50">
-                <div className="flex items-center space-x-4">
-                  <div className={`p-2 rounded bg-matrix-black border border-matrix-neon/10 text-matrix-neon`}>
+              <div key={exp.id} className="bg-matrix-dim border border-matrix-neon/20 rounded p-3 flex items-start justify-between relative group overflow-hidden transition-all hover:border-matrix-neon/50">
+                <div className="flex items-start space-x-4 flex-1 mr-2">
+                  <div className={`p-2 rounded bg-matrix-black border border-matrix-neon/10 text-matrix-neon mt-1`}>
                     {CATEGORY_ICONS[exp.category]}
                   </div>
-                  <div>
-                    <div className="text-matrix-text text-sm font-bold truncate max-w-[150px]">{exp.description || exp.category}</div>
+                  <div className="flex-1 overflow-hidden">
+                    {/* Vertical Carousel Effect for Description */}
+                    <div className="h-10 relative overflow-hidden">
+                      <div className="text-matrix-text text-sm font-bold leading-5 w-full">
+                        {exp.description ? (
+                          <div className={exp.description.length > 50 ? "vertical-carousel" : ""}>
+                             <span>{exp.description}</span>
+                             {/* Duplicate for seamless loop if needed, though simple alternate works well */}
+                             {exp.description.length > 50 && <span className="mt-2 text-matrix-neon/50">{exp.description}</span>}
+                          </div>
+                        ) : (
+                          exp.category
+                        )}
+                      </div>
+                    </div>
+
                     <div className="text-[10px] text-matrix-neon/60 flex items-center gap-2 mt-1">
                       {exp.paymentMethod === 'Credit Card' && <span className="text-blue-400 bg-blue-900/20 px-1 rounded border border-blue-900/50">CARD</span>}
                       {exp.isSplit && <span className="text-orange-400 bg-orange-900/20 px-1 rounded border border-orange-900/50">SPLIT 1/{exp.splitCount}</span>}
@@ -57,7 +71,7 @@ const History: React.FC<HistoryProps> = ({ expenses, onDelete, exchangeRate }) =
                   </div>
                 </div>
                 
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-end pt-1">
                   <span className="text-lg font-bold text-matrix-neon tracking-tighter">
                     ฿ {exp.splitAmountTHB.toLocaleString()}
                   </span>
@@ -73,7 +87,7 @@ const History: React.FC<HistoryProps> = ({ expenses, onDelete, exchangeRate }) =
                     }}
                     className="absolute right-0 top-0 bottom-0 w-16 bg-red-900/80 flex items-center justify-center translate-x-full group-hover:translate-x-0 transition-transform duration-200"
                 >
-                    <Trash2 className="text-white" size={18} />
+                    <Trash2 className="text-white" size={20} />
                 </button>
               </div>
             ))}

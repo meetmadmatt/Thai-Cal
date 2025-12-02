@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, List, PieChart, Minus, Receipt } from 'lucide-react';
+import { Plus, List, PieChart, Minus, Receipt, Check } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { CATEGORY_ICONS, DEFAULT_EXCHANGE_RATE } from './constants';
 import { Expense, Category, PaymentMethod, ViewState } from './types';
@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('log');
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [exchangeRate, setExchangeRate] = useState<number>(DEFAULT_EXCHANGE_RATE);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   
   // Form State
   const [amount, setAmount] = useState<string>('');
@@ -119,7 +120,12 @@ const App: React.FC = () => {
 
     setExpenses(prev => [newExpense, ...prev]);
     handleClear();
-    setView('history');
+    
+    // Show Success Toast
+    setShowSuccessToast(true);
+    setTimeout(() => {
+        setShowSuccessToast(false);
+    }, 2000);
   };
 
   const deleteExpense = (id: string) => {
@@ -129,24 +135,25 @@ const App: React.FC = () => {
   // Render Log View
   const renderLogView = () => (
     <div className="flex flex-col h-full font-mono">
-      {/* Display Area - Compact */}
-      <div className="flex-none pt-4 pb-3 px-5 bg-matrix-dim border-b border-matrix-neon/20 z-10 relative">
-        <div className="flex justify-between items-start mb-1">
-            <div className="text-matrix-neon/80 text-[10px] font-bold tracking-widest uppercase animate-pulse">
+      {/* Display Area */}
+      <div className="flex-none pt-6 pb-4 px-5 bg-matrix-dim border-b border-matrix-neon/20 z-10 relative">
+        <div className="flex justify-between items-start mb-2">
+            <div className="text-matrix-neon/80 text-xs font-bold tracking-widest uppercase animate-pulse">
                 &gt; AMOUNT_THB
             </div>
         </div>
         
-        <div className="flex items-baseline justify-between mt-1">
+        <div className="flex items-baseline justify-between mt-2">
             <div className="flex items-baseline overflow-hidden">
-                <span className="text-xl text-matrix-neon mr-2">฿</span>
-                <span className="text-4xl font-bold text-matrix-neon tracking-tight drop-shadow-[0_0_5px_rgba(0,255,65,0.7)] truncate">
+                <span className="text-2xl text-matrix-neon mr-2">฿</span>
+                {/* Enlarged Amount Font */}
+                <span className="text-6xl font-bold text-matrix-neon tracking-tight drop-shadow-[0_0_5px_rgba(0,255,65,0.7)] truncate">
                     {amount || '0'}
-                    <span className="text-lg ml-2 animate-pulse">_</span>
+                    <span className="text-2xl ml-2 animate-pulse">_</span>
                 </span>
             </div>
             {amount && (
-                <div className="text-matrix-neon/80 font-mono text-xs border border-matrix-neon/40 px-2 py-0.5 rounded ml-2 whitespace-nowrap">
+                <div className="text-matrix-neon/80 font-mono text-sm border border-matrix-neon/40 px-2 py-1 rounded ml-2 whitespace-nowrap">
                     ≈ $ {Math.round(parseFloat(amount) * exchangeRate)}
                 </div>
             )}
@@ -158,38 +165,38 @@ const App: React.FC = () => {
             placeholder="// Add description..." 
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full mt-3 bg-matrix-black border-l-2 border-matrix-neon/50 text-matrix-text placeholder-matrix-neon/50 text-xs px-3 py-2 focus:border-matrix-neon outline-none transition-all"
+            className="w-full mt-4 bg-matrix-black border-l-4 border-matrix-neon/50 text-matrix-text placeholder-matrix-neon/50 text-sm px-3 py-2 focus:border-matrix-neon outline-none transition-all"
         />
       </div>
 
-      {/* Inputs Area - Compact */}
-      <div className="flex-none p-4 space-y-3">
+      {/* Inputs Area */}
+      <div className="flex-none p-4 space-y-4">
         
-        {/* Category Grid */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* Category Grid - Taller Buttons */}
+        <div className="grid grid-cols-4 gap-3">
           {Object.values(Category).map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`flex flex-col items-center justify-center p-2 rounded border transition-all duration-200 ${
+              className={`flex flex-col items-center justify-center h-20 rounded border transition-all duration-200 ${
                 category === cat 
                   ? 'bg-matrix-neon/10 border-matrix-neon text-matrix-neon shadow-neon-sm' 
                   : 'bg-matrix-dim border-matrix-neon/20 text-matrix-neon/50 hover:border-matrix-neon/50 hover:text-matrix-neon'
               }`}
             >
-              {CATEGORY_ICONS[cat]}
-              <span className="text-[8px] mt-1 font-bold uppercase tracking-wider">{cat}</span>
+              <div className="scale-125 mb-1">{CATEGORY_ICONS[cat]}</div>
+              <span className="text-[9px] mt-1 font-bold uppercase tracking-wider">{cat}</span>
             </button>
           ))}
         </div>
 
-        {/* Controls Row: Payment & Split */}
-        <div className="flex justify-between items-center gap-2">
+        {/* Controls Row: Payment & Split - Matched Height (h-12) */}
+        <div className="grid grid-cols-2 gap-3 h-12">
              {/* Payment Method Switch */}
-            <div className="flex bg-matrix-dim border border-matrix-neon/30 rounded p-0.5">
+            <div className="flex bg-matrix-dim border border-matrix-neon/30 rounded p-1 w-full h-full">
                 <button
                     onClick={() => setPaymentMethod(PaymentMethod.Cash)}
-                    className={`px-3 py-1.5 rounded text-[10px] font-bold transition-all ${
+                    className={`flex-1 rounded text-xs font-bold transition-all h-full flex items-center justify-center uppercase tracking-wider ${
                         paymentMethod === PaymentMethod.Cash
                         ? 'bg-matrix-neon text-matrix-black shadow-neon-sm'
                         : 'text-matrix-neon/50 hover:text-matrix-neon'
@@ -199,7 +206,7 @@ const App: React.FC = () => {
                 </button>
                 <button
                     onClick={() => setPaymentMethod(PaymentMethod.CreditCard)}
-                    className={`px-3 py-1.5 rounded text-[10px] font-bold transition-all ${
+                    className={`flex-1 rounded text-xs font-bold transition-all h-full flex items-center justify-center uppercase tracking-wider ${
                         paymentMethod === PaymentMethod.CreditCard
                         ? 'bg-matrix-neon text-matrix-black shadow-neon-sm'
                         : 'text-matrix-neon/50 hover:text-matrix-neon'
@@ -210,23 +217,23 @@ const App: React.FC = () => {
             </div>
             
             {/* Split Button */}
-            <div className="flex items-center gap-2">
+            <div className="flex w-full h-full gap-2">
                 <button 
                     onClick={() => setIsSplit(!isSplit)}
-                    className={`px-3 py-1.5 border rounded text-[10px] font-bold uppercase transition-all ${
+                    className={`flex-1 border rounded text-xs font-bold uppercase tracking-wider transition-all h-full flex items-center justify-center ${
                         isSplit 
                         ? 'border-matrix-neon text-matrix-neon bg-matrix-neon/10 shadow-neon-sm' 
                         : 'border-matrix-neon/30 text-matrix-neon/50 bg-matrix-dim'
                     }`}
                 >
-                    Split Bill
+                    Split
                 </button>
                 
                 {isSplit && (
-                    <div className="flex items-center bg-matrix-dim border border-matrix-neon/30 rounded px-1 h-full">
-                         <button onClick={() => setSplitCount(Math.max(2, splitCount - 1))} className="text-matrix-neon p-1 hover:bg-matrix-neon/10 rounded"><Minus size={12}/></button>
-                         <span className="text-matrix-text font-mono text-xs w-5 text-center">{splitCount}</span>
-                         <button onClick={() => setSplitCount(splitCount + 1)} className="text-matrix-neon p-1 hover:bg-matrix-neon/10 rounded"><Plus size={12}/></button>
+                    <div className="flex items-center bg-matrix-dim border border-matrix-neon/30 rounded px-1 h-full w-24 justify-between">
+                         <button onClick={() => setSplitCount(Math.max(2, splitCount - 1))} className="text-matrix-neon w-8 h-full flex items-center justify-center hover:bg-matrix-neon/10 rounded"><Minus size={16}/></button>
+                         <span className="text-matrix-text font-mono text-sm font-bold">{splitCount}</span>
+                         <button onClick={() => setSplitCount(splitCount + 1)} className="text-matrix-neon w-8 h-full flex items-center justify-center hover:bg-matrix-neon/10 rounded"><Plus size={16}/></button>
                     </div>
                 )}
             </div>
@@ -234,20 +241,20 @@ const App: React.FC = () => {
       </div>
 
       {/* Numpad & Action */}
-      <div className="flex-grow flex flex-col justify-end pb-2 px-4">
+      <div className="flex-grow flex flex-col justify-end pb-4 px-4 space-y-4">
         <NumberPad onInput={handleNumberInput} onDelete={handleDeleteNumber} onClear={handleClear} />
         
-        <div className="mt-3">
+        <div className="">
             <button 
                 onClick={handleSubmit}
                 disabled={!amount}
-                className={`w-full py-3 rounded border font-bold text-base flex items-center justify-center space-x-2 transition-all font-mono uppercase tracking-widest ${
+                className={`w-full h-16 rounded border font-bold text-lg flex items-center justify-center space-x-2 transition-all font-mono uppercase tracking-widest ${
                     amount 
                     ? 'bg-matrix-neon text-matrix-black border-matrix-neon hover:shadow-neon hover:bg-matrix-glitch active:translate-y-0.5' 
                     : 'bg-transparent text-matrix-neon/30 border-matrix-neon/20 cursor-not-allowed'
                 }`}
             >
-                <Plus strokeWidth={3} size={18} />
+                <Plus strokeWidth={3} size={24} />
                 <span>LOG EXPENSE</span>
             </button>
         </div>
@@ -258,8 +265,18 @@ const App: React.FC = () => {
   return (
     <div className="h-screen w-full max-w-md mx-auto bg-matrix-black flex flex-col relative overflow-hidden font-mono text-matrix-text border-x border-matrix-light/10 shadow-2xl">
       
+      {/* Notification Toast */}
+      {showSuccessToast && (
+          <div className="absolute bottom-28 left-1/2 transform -translate-x-1/2 z-50 animate-in fade-in zoom-in duration-200 w-auto">
+              <div className="bg-matrix-neon text-matrix-black border border-matrix-black shadow-[0_0_15px_rgba(0,255,65,0.5)] px-4 h-12 rounded flex items-center justify-center space-x-2 font-bold font-mono tracking-wider min-w-[200px]">
+                  <Check size={20} strokeWidth={3} />
+                  <span className="text-sm">EXPENSE LOGGED</span>
+              </div>
+          </div>
+      )}
+
       {/* Main Content */}
-      <main className="flex-grow relative overflow-hidden bg-matrix-black bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-dim/20 to-transparent pb-20">
+      <main className="flex-grow relative overflow-hidden bg-matrix-black bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-dim/20 to-transparent pb-24">
         {view === 'log' && renderLogView()}
         {view === 'history' && <History expenses={expenses} onDelete={deleteExpense} exchangeRate={exchangeRate} />}
         {view === 'stats' && <Summary 
@@ -271,29 +288,29 @@ const App: React.FC = () => {
       </main>
 
       {/* Bottom Nav */}
-      <nav className="fixed bottom-0 w-full max-w-md bg-matrix-black/95 backdrop-blur border-t border-matrix-neon/20 flex items-center justify-around h-20 pb-5 z-40 shadow-[0_-5px_20px_rgba(0,255,65,0.1)]">
+      <nav className="fixed bottom-0 w-full max-w-md bg-matrix-black/95 backdrop-blur border-t border-matrix-neon/20 flex items-center justify-around h-24 pb-8 z-40 shadow-[0_-5px_20px_rgba(0,255,65,0.1)]">
         <button 
             onClick={() => setView('history')}
             className={`flex flex-col items-center p-2 w-1/3 transition-colors group ${view === 'history' ? 'text-matrix-neon' : 'text-matrix-neon/50'}`}
         >
-            <List size={22} className="group-hover:animate-pulse" />
-            <span className="text-[10px] font-bold mt-1 uppercase tracking-widest">History</span>
+            <List size={24} className="group-hover:animate-pulse" />
+            <span className="text-[10px] font-bold mt-2 uppercase tracking-widest">History</span>
         </button>
         
         <button 
             onClick={() => setView('log')}
             className={`flex flex-col items-center p-2 w-1/3 transition-colors group ${view === 'log' ? 'text-matrix-neon' : 'text-matrix-neon/50'}`}
         >
-            <Receipt size={22} className="group-hover:animate-pulse" />
-            <span className="text-[10px] font-bold mt-1 uppercase tracking-widest">Log</span>
+            <Receipt size={24} className="group-hover:animate-pulse" />
+            <span className="text-[10px] font-bold mt-2 uppercase tracking-widest">Log</span>
         </button>
 
         <button 
             onClick={() => setView('stats')}
             className={`flex flex-col items-center p-2 w-1/3 transition-colors group ${view === 'stats' ? 'text-matrix-neon' : 'text-matrix-neon/50'}`}
         >
-            <PieChart size={22} className="group-hover:animate-pulse" />
-            <span className="text-[10px] font-bold mt-1 uppercase tracking-widest">Stats</span>
+            <PieChart size={24} className="group-hover:animate-pulse" />
+            <span className="text-[10px] font-bold mt-2 uppercase tracking-widest">Stats</span>
         </button>
       </nav>
     </div>
