@@ -1,7 +1,7 @@
 // This service is disabled for the offline version of the app.
 // No API keys or external libraries are required.
 
-import { Category } from '../types';
+import type { Category } from '../types';
 
 interface ScannedReceiptData {
   amountTHB: number;
