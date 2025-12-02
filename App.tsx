@@ -172,13 +172,13 @@ const App: React.FC = () => {
       {/* Inputs Area */}
       <div className="flex-none p-4 space-y-4">
         
-        {/* Category Grid - Taller Buttons */}
-        <div className="grid grid-cols-4 gap-3">
+        {/* Category Grid - Reduced Height */}
+        <div className="grid grid-cols-4 gap-[11px]">
           {Object.values(Category).map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`flex flex-col items-center justify-center h-20 rounded border transition-all duration-200 ${
+              className={`flex flex-col items-center justify-center h-[63px] rounded border transition-all duration-200 ${
                 category === cat 
                   ? 'bg-matrix-neon/10 border-matrix-neon text-matrix-neon shadow-neon-sm' 
                   : 'bg-matrix-dim border-matrix-neon/20 text-matrix-neon/50 hover:border-matrix-neon/50 hover:text-matrix-neon'
