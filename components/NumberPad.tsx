@@ -38,12 +38,12 @@ const NumberPad: React.FC<NumberPadProps> = ({ onInput, onDelete, onClear }) => 
   };
 
   return (
-    <div className="grid grid-cols-3 gap-3 p-1">
+    <div className="grid grid-cols-3 gap-2 p-1">
       {buttons.map((btn) => (
         <button
           key={btn}
           onClick={() => onInput(btn)}
-          className="h-14 rounded border border-matrix-light/20 bg-matrix-dim/50 text-2xl font-mono text-matrix-neon active:bg-matrix-neon/20 active:border-matrix-neon active:shadow-neon-sm transition-all"
+          className="h-11 rounded border border-matrix-light/20 bg-matrix-dim/50 text-xl font-mono text-matrix-neon active:bg-matrix-neon/20 active:border-matrix-neon active:shadow-neon-sm transition-all"
         >
           {btn}
         </button>
@@ -53,9 +53,9 @@ const NumberPad: React.FC<NumberPadProps> = ({ onInput, onDelete, onClear }) => 
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
         onContextMenu={(e) => e.preventDefault()}
-        className="h-14 rounded border border-red-900/40 bg-red-900/10 text-red-400 flex items-center justify-center active:bg-red-900/30 transition-all hover:border-red-500/50"
+        className="h-11 rounded border border-red-900/40 bg-red-900/10 text-red-400 flex items-center justify-center active:bg-red-900/30 transition-all hover:border-red-500/50"
       >
-        <Delete size={20} />
+        <Delete size={18} />
       </button>
     </div>
   );
