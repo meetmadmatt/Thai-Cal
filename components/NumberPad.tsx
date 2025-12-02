@@ -43,7 +43,8 @@ const NumberPad: React.FC<NumberPadProps> = ({ onInput, onDelete, onClear }) => 
         <button
           key={btn}
           onClick={() => onInput(btn)}
-          className="h-[49px] rounded border border-matrix-light/20 bg-matrix-dim/50 text-2xl font-mono text-matrix-neon active:bg-matrix-neon/20 active:border-matrix-neon active:shadow-neon-sm transition-all font-bold"
+          // Reduced height from h-[49px] to h-[46px] (approx 6%)
+          className="h-[46px] rounded border border-matrix-light/20 bg-matrix-dim/50 text-2xl font-mono text-matrix-neon active:bg-matrix-neon/20 active:border-matrix-neon active:shadow-neon-sm transition-all font-bold"
         >
           {btn}
         </button>
@@ -53,7 +54,7 @@ const NumberPad: React.FC<NumberPadProps> = ({ onInput, onDelete, onClear }) => 
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
         onContextMenu={(e) => e.preventDefault()}
-        className="h-[49px] rounded border border-red-900/40 bg-red-900/10 text-red-400 flex items-center justify-center active:bg-red-900/30 transition-all hover:border-red-500/50"
+        className="h-[46px] rounded border border-red-900/40 bg-red-900/10 text-red-400 flex items-center justify-center active:bg-red-900/30 transition-all hover:border-red-500/50"
       >
         <Delete size={24} />
       </button>

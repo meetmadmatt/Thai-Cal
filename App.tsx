@@ -135,8 +135,8 @@ const App: React.FC = () => {
   // Render Log View
   const renderLogView = () => (
     <div className="flex flex-col h-full font-mono">
-      {/* Display Area */}
-      <div className="flex-none pt-6 pb-4 px-5 bg-matrix-dim border-b border-matrix-neon/20 z-10 relative">
+      {/* Display Area - Reduced Vertical Margin (pt-4 pb-2 instead of pt-6 pb-4) */}
+      <div className="flex-none pt-4 pb-2 px-5 bg-matrix-dim border-b border-matrix-neon/20 z-10 relative">
         <div className="flex justify-between items-start mb-2">
             <div className="text-matrix-neon/80 text-xs font-bold tracking-widest uppercase animate-pulse">
                 &gt; AMOUNT_THB
@@ -287,8 +287,8 @@ const App: React.FC = () => {
                             />}
       </main>
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 w-full max-w-md bg-matrix-black/95 backdrop-blur border-t border-matrix-neon/20 flex items-center justify-around h-24 pb-8 z-40 shadow-[0_-5px_20px_rgba(0,255,65,0.1)]">
+      {/* Bottom Nav - Reduced Height and Padding (h-24 pb-8 -> h-20 pb-4) */}
+      <nav className="fixed bottom-0 w-full max-w-md bg-matrix-black/95 backdrop-blur border-t border-matrix-neon/20 flex items-center justify-around h-20 pb-4 z-40 shadow-[0_-5px_20px_rgba(0,255,65,0.1)]">
         <button 
             onClick={() => setView('history')}
             className={`flex flex-col items-center p-2 w-1/3 transition-colors group ${view === 'history' ? 'text-matrix-neon' : 'text-matrix-neon/50'}`}
